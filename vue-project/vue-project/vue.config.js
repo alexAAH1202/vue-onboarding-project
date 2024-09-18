@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const stripe = require('stripe')('sk_test_1234567890abcdefghijklmnop');
+const stripe = require('stripe')('');
 
 module.exports = {
   devServer: {

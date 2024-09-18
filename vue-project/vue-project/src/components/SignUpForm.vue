@@ -1,20 +1,20 @@
 <template>
-  <form @submit.prevent="submitForm">
+  <form @submit.prevent="handleSubmit">
     <h2>Sign Up</h2>
 
     <div>
       <label for="businessName">Business Name:</label>
-      <input v-model="businessName" id="businessName" required>
+      <input v-model="businessName" id="businessName" placeholder="Business Name" required>
     </div>
 
     <div>
       <label for="businessAddress">Business Address:</label>
-      <input v-model="businessAddress" id="businessAddress" required>
+      <input v-model="businessAddress" id="businessAddress" placeholder="Business Address" required>
     </div>
 
     <div>
       <label for="abnAcn">ABN/ACN (if applicable):</label>
-      <input v-model="abnAcn" id="abnAcn">
+      <input v-model="abnAcn" id="abnAcn" placeholder="ABN/ACN (if applicable)">
     </div>
 
     <div>
@@ -45,8 +45,8 @@
       <stripe-element-card @change="stripeElementChange" />
     </div>
 
-    <button type="submit" :disabled="!stripe || !elements || !clientSecret || loading">
-      {{ loading ? 'Processing...' : 'Pay Now' }}
+    <button type="submit" :disabled="isProcessing">
+      {{ isProcessing ? 'Processing...' : 'Sign Up' }}
     </button>
 
     <div v-if="errorMessage" class="error-message">
@@ -79,7 +79,7 @@ export default {
       stripe: null,
       elements: null,
       clientSecret: null,
-      loading: false,
+      isProcessing: false,
       errorMessage: '',
     }
   },
@@ -138,9 +138,14 @@ export default {
         this.errorMessage = '';
       }
     },
-    async submitForm() {
-      this.loading = true;
+    async handleSubmit() {
+      this.isProcessing = true;
       this.errorMessage = '';
+
+      if (!this.validateFields()) {
+        this.isProcessing = false;
+        return;
+      }
 
       try {
         const result = await this.stripe.confirmCardPayment(this.clientSecret, {
@@ -164,12 +169,25 @@ export default {
 
         // Handle successful payment (e.g., show success message, redirect)
         console.log('Payment successful');
+        this.$router.push('/dashboard');
       } catch (error) {
         console.error('Payment failed:', error);
         this.errorMessage = error.message;
       } finally {
-        this.loading = false;
+        this.isProcessing = false;
       }
+    },
+    validateFields() {
+      if (!this.businessName.trim()) {
+        this.errorMessage = 'Business name is required.';
+        return false;
+      }
+      if (!this.businessAddress.trim()) {
+        this.errorMessage = 'Business address is required.';
+        return false;
+      }
+      // Add more validations as needed
+      return true;
     },
     async submitAdditionalDetails(paymentIntentId) {
       try {
