@@ -43,6 +43,7 @@
         <option value="monthly">Monthly</option>
         <option value="yearly">Yearly</option>
       </select>
+      <p><strong>New Price:</strong> ${{ calculateNewPrice() }}</p>
       <button @click="renewSubscription">Confirm Renewal</button>
       <button @click="showRenewalModal = false">Cancel</button>
     </div>
@@ -102,15 +103,58 @@ export default defineComponent({
     }
 
     const isSubscriptionExpiringSoon = computed(() => {
-      // Implement expiration check logic
+      const expirationDate = new Date(userInfo.value?.nextPaymentDate || '')
+      const today = new Date()
+      const daysUntilExpiration = Math.ceil((expirationDate.getTime() - today.getTime()) / (1000 * 3600 * 24))
+      return daysUntilExpiration <= 7 // Consider "soon" as within 7 days
     })
 
-    const renewSubscription = () => {
-      // Implement renewal logic
+    const calculateNewPrice = () => {
+      // Implement pricing logic based on newSubscriptionTier and newBillingFrequency
+      // This is a placeholder implementation
+      const basePrice = newSubscriptionTier.value === 'basic' ? 10 : newSubscriptionTier.value === 'pro' ? 20 : 30
+      const multiplier = newBillingFrequency.value === 'yearly' ? 10 : 1 // 2 months free for yearly
+      return (basePrice * multiplier * 1.1).toFixed(2) // Including 10% GST
     }
 
-    const updateBusinessInfo = () => {
-      // Implement update logic
+    const renewSubscription = async () => {
+      try {
+        loading.value = true
+        const renewalData = {
+          subscriptionTier: newSubscriptionTier.value,
+          billingFrequency: newBillingFrequency.value,
+          businessName: newBusinessName.value,
+          businessAddress: newBusinessAddress.value,
+          abnAcn: newAbnAcn.value
+        }
+        await store.dispatch('renewSubscription', renewalData)
+        showRenewalModal.value = false
+        // Optionally, show a success message
+      } catch (err) {
+        console.error('Renewal failed:', err)
+        error.value = 'Renewal failed. Please try again.'
+      } finally {
+        loading.value = false
+      }
+    }
+
+    const updateBusinessInfo = async () => {
+      try {
+        loading.value = true
+        const updatedInfo = {
+          businessName: newBusinessName.value,
+          businessAddress: newBusinessAddress.value,
+          abnAcn: newAbnAcn.value
+        }
+        await store.dispatch('updateBusinessInfo', updatedInfo)
+        showUpdateBusinessInfoModal.value = false
+        // Optionally, show a success message
+      } catch (err) {
+        console.error('Update failed:', err)
+        error.value = 'Update failed. Please try again.'
+      } finally {
+        loading.value = false
+      }
     }
 
     return {
@@ -127,6 +171,7 @@ export default defineComponent({
       logout,
       formatDate,
       isSubscriptionExpiringSoon,
+      calculateNewPrice,
       renewSubscription,
       updateBusinessInfo
     }
