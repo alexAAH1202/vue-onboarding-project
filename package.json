@@ -7,15 +7,16 @@
     "dev": "nodemon src/app.js",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
-    "test:unit": "vitest",
-    "test:e2e": "start-server-and-test preview http://localhost:4173 'cypress run --e2e'",
+    "test:unit": "vue-cli-service test:unit tests/unit/**/*.spec.js",
+    "test:e2e": "vue-cli-service test:e2e --headless",
     "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' http://localhost:4173 'cypress open --e2e'",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
     "start": "node src/app.js",
-    "mock-api": "json-server --watch db.json --port 3000"
+    "mock-api": "json-server --watch db.json --port 3000",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "@vuelidate/core": "^2.0.3",
@@ -27,6 +28,9 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.3",
     "pinia": "^2.1.7",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"
   },
