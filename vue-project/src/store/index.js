@@ -2,26 +2,20 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    user: null,
-    isAuthenticated: false
-  },
-  getters: {
-    isAuthenticated: state => state.isAuthenticated
+    user: null
   },
   mutations: {
     SET_USER(state, user) {
       state.user = user
-      state.isAuthenticated = !!user
     }
   },
   actions: {
-    login({ commit }, user) {
-      // Perform login logic here
-      commit('SET_USER', user)
-    },
-    logout({ commit }) {
-      // Perform logout logic here
+    async logout({ commit }) {
+      // Perform any necessary logout operations (e.g., API call to invalidate token)
+      // Then clear the user from the state
       commit('SET_USER', null)
+      // Optionally, clear any stored tokens or user data from localStorage
+      localStorage.removeItem('user-token')
     }
   }
 })

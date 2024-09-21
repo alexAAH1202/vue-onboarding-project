@@ -1,56 +1,89 @@
 <template>
   <div class="dashboard">
-    <h1>Welcome, {{ user.name }}</h1>
+    <header>
+      <h1>Dashboard</h1>
+      <button @click="logout" class="logout-btn">Logout</button>
+    </header>
     <nav>
-      <router-link v-if="canAccessWorkflows" to="/dashboard/workflows">Workflows</router-link>
-      <router-link v-if="canAccessForms" to="/dashboard/forms">Forms</router-link>
-      <router-link v-if="canAccessDocuments" to="/dashboard/documents">Documents</router-link>
+      <router-link to="/dashboard/user">User Dashboard</router-link>
+      <router-link to="/dashboard/workflow">Workflow Automation</router-link>
+      <router-link to="/dashboard/documents">Document Generation</router-link>
+      <router-link to="/dashboard/forms">Dynamic Form Creation</router-link>
     </nav>
     <router-view></router-view>
   </div>
 </template>
 
-<script>
-import { computed } from 'vue'
+<script lang="ts">
+import { defineComponent } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
-export default {
+export default defineComponent({
+  name: 'Dashboard',
   setup() {
     const store = useStore()
-    const user = computed(() => store.state.user)
+    const router = useRouter()
 
-    const canAccessWorkflows = computed(() => ['practitioner', 'administrative_staff', 'systems_administrator'].includes(user.value.role))
-    const canAccessForms = computed(() => ['practitioner', 'administrative_staff', 'systems_administrator', 'participant'].includes(user.value.role))
-    const canAccessDocuments = computed(() => ['practitioner', 'administrative_staff', 'systems_administrator', 'plan_manager'].includes(user.value.role))
+    const logout = async () => {
+      try {
+        await store.dispatch('logout')
+        router.push('/login')
+      } catch (error) {
+        console.error('Logout failed:', error)
+        // Optionally, you can show an error message to the user
+      }
+    }
 
     return {
-      user,
-      canAccessWorkflows,
-      canAccessForms,
-      canAccessDocuments
+      logout
     }
   }
-}
+})
 </script>
 
 <style scoped>
 .dashboard {
-  max-width: 800px;
-  margin: 0 auto;
   padding: 20px;
 }
-.user-details {
-  background-color: #f0f8ff;
-  padding: 20px;
-  border-radius: 5px;
-  margin-top: 20px;
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
-button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #4169e1;
+
+nav {
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #333;
+  padding: 5px 10px;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+}
+
+nav a.router-link-active {
+  font-weight: bold;
+  background-color: #e0e0e0;
+}
+
+.logout-btn {
+  padding: 5px 10px;
+  background-color: #f44336;
   color: white;
   border: none;
+  border-radius: 4px;
   cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #d32f2f;
 }
 </style>

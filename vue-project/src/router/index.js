@@ -6,6 +6,10 @@ import Help from '@/views/Help.vue'
 import SignUpForm from '@/views/SignUpForm.vue'
 import Login from '@/views/Login.vue'
 import Dashboard from '@/views/Dashboard.vue'
+import UserDashboard from '@/components/UserDashboard.vue'
+import WorkflowAutomation from '@/components/WorkflowAutomation.vue'
+import DocumentGeneration from '@/components/DocumentGeneration.vue'
+import DynamicFormCreation from '@/components/DynamicFormCreation.vue'
 
 const routes = [
   {
@@ -40,8 +44,14 @@ const routes = [
   },
   {
     path: '/dashboard',
-    name: 'Dashboard',
     component: Dashboard,
+    children: [
+      { path: '', redirect: 'user' },
+      { path: 'user', component: UserDashboard },
+      { path: 'workflow', component: WorkflowAutomation },
+      { path: 'documents', component: DocumentGeneration },
+      { path: 'forms', component: DynamicFormCreation },
+    ],
     meta: { requiresAuth: true }
   }
   // ... other authenticated routes
