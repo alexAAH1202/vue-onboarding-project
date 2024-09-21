@@ -1,43 +1,27 @@
-import { createStore, Store, StoreEnhancer } from 'vuex'
-import { api } from '@/api'
+import { createStore } from 'vuex'
 
-const store = createStore({
+export default createStore({
   state: {
-    user: {
-      userInfo: null
+    user: null,
+    isAuthenticated: false
+  },
+  getters: {
+    isAuthenticated: state => state.isAuthenticated
+  },
+  mutations: {
+    SET_USER(state, user) {
+      state.user = user
+      state.isAuthenticated = !!user
     }
   },
   actions: {
-    async renewSubscription({ commit }, renewalData) {
-      try {
-        // Call your API to process the renewal
-        const response = await api.renewSubscription(renewalData)
-        // Update the store with the new subscription info
-        commit('UPDATE_USER_INFO', response.data)
-      } catch (error) {
-        console.error('Failed to renew subscription:', error)
-        throw error
-      }
+    login({ commit }, user) {
+      // Perform login logic here
+      commit('SET_USER', user)
     },
-
-    async updateBusinessInfo({ commit }, updatedInfo) {
-      try {
-        // Call your API to update business info
-        const response = await api.updateBusinessInfo(updatedInfo)
-        // Update the store with the new user info
-        commit('UPDATE_USER_INFO', response.data)
-      } catch (error) {
-        console.error('Failed to update business info:', error)
-        throw error
-      }
-    }
-  },
-
-  mutations: {
-    UPDATE_USER_INFO(state, userInfo) {
-      state.user.userInfo = userInfo
+    logout({ commit }) {
+      // Perform logout logic here
+      commit('SET_USER', null)
     }
   }
 })
-
-export default store

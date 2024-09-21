@@ -1,20 +1,24 @@
 <template>
   <div id="app">
-    <Header />
-    <router-view/>
+    <MainNavigation />
+    <router-view></router-view>
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent } from 'vue'
-import Header from '@/components/Header.vue'
+import MainNavigation from '@/components/MainNavigation.vue'
 
 export default defineComponent({
   name: 'App',
   components: {
-    Header
+    MainNavigation
   }
 })
+</script>
+export default { 
+  name: 'App'
+}
 </script>
 
 <style>
@@ -25,3 +29,4 @@ export default defineComponent({
   color: #2c3e50;
 }
 </style>
+

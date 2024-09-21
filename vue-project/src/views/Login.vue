@@ -1,49 +1,35 @@
 <template>
   <div class="login">
-    <h2>Login</h2>
-    <form @submit.prevent="handleSubmit">
-      <div>
-        <label for="email">Email:</label>
-        <input type="email" id="email" v-model="email" required>
-      </div>
-      <div>
-        <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password" required>
-      </div>
+    <h1>Login</h1>
+    <form @submit.prevent="handleLogin">
+      <input v-model="email" type="email" placeholder="Email" required>
+      <input v-model="password" type="password" placeholder="Password" required>
       <button type="submit">Login</button>
     </form>
-    <p v-if="error" class="error">{{ error }}</p>
   </div>
 </template>
 
 <script>
 import { ref } from 'vue'
-import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
 export default {
-  name: 'Login',
   setup() {
-    const store = useStore()
     const router = useRouter()
     const email = ref('')
     const password = ref('')
-    const error = ref('')
 
-    const handleSubmit = async () => {
-      try {
-        await store.dispatch('login', { email: email.value, password: password.value })
-        router.push('/dashboard')
-      } catch (err) {
-        error.value = 'Login failed. Please check your credentials.'
-      }
+    const handleLogin = async () => {
+      // Here you would typically make an API call to authenticate
+      // For this example, we'll just simulate a successful login
+      localStorage.setItem('user-token', 'dummy-token')
+      router.push('/dashboard')
     }
 
     return {
       email,
       password,
-      error,
-      handleSubmit
+      handleLogin
     }
   }
 }
