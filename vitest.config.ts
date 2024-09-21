@@ -1,14 +1,14 @@
-import { fileURLToPath } from 'node:url'
-import { mergeConfig, defineConfig, configDefaults } from 'vitest/config'
-import viteConfig from './vite.config'
+/// <reference types="vitest" />
+import { defineConfig } from 'vite'
 
-export default mergeConfig(
-  viteConfig,
-  defineConfig({
-    test: {
-      environment: 'jsdom',
-      exclude: [...configDefaults.exclude, 'e2e/**'],
-      root: fileURLToPath(new URL('./', import.meta.url))
-    }
-  })
-)
+export default defineConfig({
+  test: {
+    // Vitest configuration options
+  },
+  build: {
+    outDir: 'dist', // Make sure this matches your output directory
+  },
+  server: {
+    port: 4173, // Ensure this matches the port in your start command
+  },
+})
